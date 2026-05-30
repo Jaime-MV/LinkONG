@@ -1,0 +1,19 @@
+{
+  "name": "linkong-root",
+  "version": "1.0.0",
+  "description": "Orquestador del entorno de desarrollo para el proyecto LinkONG (React + Spring Boot + Postgres)",
+  "main": "index.js",
+  "scripts": {
+    "dev:frontend": "pnpm --prefix frontend run dev",
+    "dev:backend": "cross-env JAVA_HOME=\"C:/Users/aceja/OneDrive/Escritorio/Borrar2/ms-17.0.18/ms-17.0.18\" cmd /c \"cd api && mvnw.cmd spring-boot:run\"",
+    "dev": "concurrently -n \"React,Spring\" -c \"cyan,green\" \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
+    "install:frontend": "pnpm --prefix frontend install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3"
+  }
+}

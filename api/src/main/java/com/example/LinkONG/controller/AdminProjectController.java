@@ -1,24 +1,40 @@
 package com.example.LinkONG.controller;
 
 import com.example.LinkONG.model.SocialProject;
+import com.example.LinkONG.model.Coordinator;
 import com.example.LinkONG.service.ProjectService;
+import com.example.LinkONG.repository.CoordinatorRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/proyectos")
+@CrossOrigin(origins = "*")
 public class AdminProjectController {
 
     private final ProjectService projectService;
+    private final CoordinatorRepository coordinatorRepository;
 
     @Autowired
-    public AdminProjectController(ProjectService projectService) {
+    public AdminProjectController(ProjectService projectService, CoordinatorRepository coordinatorRepository) {
         this.projectService = projectService;
+        this.coordinatorRepository = coordinatorRepository;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SocialProject>> getAllProjects() {
+        return ResponseEntity.ok(projectService.getAllProjects());
+    }
+
+    @GetMapping("/coordinadores")
+    public ResponseEntity<List<Coordinator>> getAllCoordinadores() {
+        return ResponseEntity.ok(coordinatorRepository.findAll());
     }
 
     @PostMapping

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev:frontend": "pnpm --prefix frontend run dev",
-    "dev:backend": "cross-env JAVA_HOME=\"C:/Users/aceja/OneDrive/Escritorio/Borrar2/ms-17.0.18/ms-17.0.18\" cmd /c \"cd api && mvnw.cmd spring-boot:run\"",
+    "dev:backend": "cross-env JAVA_HOME=\"C:/Users/samue/.jdks/ms-17.0.18\" cmd /c \"cd api && mvnw.cmd spring-boot:run\"",
     "dev": "concurrently -n \"React,Spring\" -c \"cyan,green\" \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
     "install:frontend": "pnpm --prefix frontend install"
   },

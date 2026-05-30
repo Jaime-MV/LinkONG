@@ -11,9 +11,19 @@ interface DashboardShellProps {
   pageSubtitle?: string;
   children: ReactNode;
   roleColor?: string;
+  extraHeaderContent?: ReactNode;
 }
 
-export function DashboardShell({ navItems, activeSection, onNav, pageTitle, pageSubtitle, children, roleColor = 'var(--primary-light)' }: DashboardShellProps) {
+export function DashboardShell({
+  navItems,
+  activeSection,
+  onNav,
+  pageTitle,
+  pageSubtitle,
+  children,
+  roleColor = 'var(--primary-light)',
+  extraHeaderContent
+}: DashboardShellProps) {
   const { user, logout } = useAuth();
 
   return (
@@ -58,6 +68,7 @@ export function DashboardShell({ navItems, activeSection, onNav, pageTitle, page
             {pageSubtitle && <div className="topbar-subtitle">{pageSubtitle}</div>}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {extraHeaderContent}
             <span className="badge badge-info" style={{ textTransform: 'capitalize' }}>{user?.role}</span>
             <button id="topbar-logout" className="btn btn-secondary btn-sm" onClick={logout}>Salir</button>
           </div>

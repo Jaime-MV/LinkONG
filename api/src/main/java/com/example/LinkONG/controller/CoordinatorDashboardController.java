@@ -40,6 +40,11 @@ public class CoordinatorDashboardController {
         return ResponseEntity.ok(projectService.getBalanceLocal(idProyecto));
     }
 
+    @GetMapping("/proyectos/{idProyecto}/actividades")
+    public ResponseEntity<List<Activity>> getActividadesProyecto(@PathVariable UUID idProyecto) {
+        return ResponseEntity.ok(activityService.getActividadesByProyecto(idProyecto));
+    }
+
     @PostMapping("/proyectos/{idProyecto}/actividades")
     public ResponseEntity<Activity> createActivity(
             @PathVariable UUID idProyecto,

@@ -1,83 +1,134 @@
 package com.example.LinkONG.service;
 
-import com.example.LinkONG.model.Project;
-import com.example.LinkONG.repository.NgoRepository;
-import com.example.LinkONG.repository.ProjectRepository;
+import com.example.LinkONG.model.SocialProject;
+import com.example.LinkONG.repository.CoordinatorRepository;
+import com.example.LinkONG.repository.DonationRepository;
+import com.example.LinkONG.repository.ProjectExpenseRepository;
+import com.example.LinkONG.repository.SocialProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class ProjectService {
 
-    private final ProjectRepository projectRepository;
-    private final NgoRepository ngoRepository;
+    private final SocialProjectRepository socialProjectRepository;
+    private final CoordinatorRepository coordinatorRepository;
+    private final DonationRepository donationRepository;
+    private final ProjectExpenseRepository projectExpenseRepository;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, NgoRepository ngoRepository) {
-        this.projectRepository = projectRepository;
-        this.ngoRepository = ngoRepository;
+    public ProjectService(SocialProjectRepository socialProjectRepository,
+                          CoordinatorRepository coordinatorRepository,
+                          DonationRepository donationRepository,
+                          ProjectExpenseRepository projectExpenseRepository) {
+        this.socialProjectRepository = socialProjectRepository;
+        this.coordinatorRepository = coordinatorRepository;
+        this.donationRepository = donationRepository;
+        this.projectExpenseRepository = projectExpenseRepository;
     }
 
-    public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+    public List<SocialProject> getAllProjects() {
+        return socialProjectRepository.findAll();
     }
 
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public Optional<SocialProject> getProjectById(UUID id) {
+        return socialProjectRepository.findById(id);
     }
 
-    public List<Project> getProjectsByNgo(Long ngoId) {
-        return projectRepository.findByNgoId(ngoId);
+    public List<SocialProject> getMisProyectos(UUID idCoordinador) {
+        return socialProjectRepository.findByIdCoordinadorResponsable(idCoordinador);
     }
 
-    public Project createProject(Project project) {
-        // Regla de Negocio: Validar que la ONG asociada realmente exista en la base de datos
-        if (!ngoRepository.existsById(project.getNgoId())) {
-            throw new IllegalArgumentException("La ONG asociada con ID " + project.getNgoId() + " no existe en la base de datos");
+    public Map<String, Object> getBalanceLocal(UUID idProyecto) {
+        SocialProject project = socialProjectRepository.findById(idProyecto)
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado con ID: " + idProyecto));
+
+        BigDecimal donaciones = donationRepository.sumDonacionesByProyecto(idProyecto);
+        BigDecimal gastos = projectExpenseRepository.sumGastosByProyecto(idProyecto);
+        BigDecimal balance = donaciones.subtract(gastos);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("proyecto_id", idProyecto);
+        response.put("nombre_proyecto", project.getNombreCampana());
+        response.put("donaciones_totales", donaciones);
+        response.put("gastos_totales", gastos);
+        response.put("balance_local", balance);
+        return response;
+    }
+
+    @Transactional
+    public SocialProject createProject(SocialProject project) {
+        if (!coordinatorRepository.existsById(project.getIdCoordinadorResponsable())) {
+            throw new IllegalArgumentException("El Coordinador Responsable asignado con ID " + project.getIdCoordinadorResponsable() + " no existe");
         }
 
-        // Regla de Negocio: Presupuesto mínimo de un proyecto es 0 (no negativo)
-        if (project.getBudget() < 0) {
-            throw new IllegalArgumentException("El presupuesto del proyecto no puede ser negativo");
+        if (project.getFechaFinEstimada().isBefore(project.getFechaInicio())) {
+            throw new IllegalArgumentException("La fecha de fin estimada no puede ser anterior a la fecha de inicio");
         }
 
-        // Regla de Negocio: Estado inicial por defecto
-        if (project.getStatus() == null || project.getStatus().trim().isEmpty()) {
-            project.setStatus("Planificado");
+        if (project.getEstadoProyecto() == null || project.getEstadoProyecto().trim().isEmpty()) {
+            project.setEstadoProyecto("En Diagnóstico");
         }
 
-        return projectRepository.save(project);
+        List<String> estadosValidos = Arrays.asList("En Diagnóstico", "En Recaudación", "En Ejecución", "Finalizado");
+        if (!estadosValidos.contains(project.getEstadoProyecto())) {
+            throw new IllegalArgumentException("Estado de proyecto no válido. Estados válidos: " + estadosValidos);
+        }
+
+        return socialProjectRepository.save(project);
     }
 
-    public Project updateProject(Long id, Project projectDetails) {
-        Project project = projectRepository.findById(id)
+    @Transactional
+    public SocialProject updateProject(UUID id, SocialProject details) {
+        SocialProject project = socialProjectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado con ID: " + id));
 
-        // Reglas de negocio en actualización
-        if (!ngoRepository.existsById(projectDetails.getNgoId())) {
-            throw new IllegalArgumentException("La ONG asociada con ID " + projectDetails.getNgoId() + " no existe en la base de datos");
+        if (!coordinatorRepository.existsById(details.getIdCoordinadorResponsable())) {
+            throw new IllegalArgumentException("El Coordinador Responsable asignado con ID " + details.getIdCoordinadorResponsable() + " no existe");
         }
 
-        if (projectDetails.getBudget() < 0) {
-            throw new IllegalArgumentException("El presupuesto del proyecto no puede ser negativo");
+        if (details.getFechaFinEstimada().isBefore(details.getFechaInicio())) {
+            throw new IllegalArgumentException("La fecha de fin estimada no puede ser anterior a la fecha de inicio");
         }
 
-        project.setTitle(projectDetails.getTitle());
-        project.setDescription(projectDetails.getDescription());
-        project.setStatus(projectDetails.getStatus());
-        project.setBudget(projectDetails.getBudget());
-        project.setNgoId(projectDetails.getNgoId());
+        List<String> estadosValidos = Arrays.asList("En Diagnóstico", "En Recaudación", "En Ejecución", "Finalizado");
+        if (!estadosValidos.contains(details.getEstadoProyecto())) {
+            throw new IllegalArgumentException("Estado de proyecto no válido. Estados válidos: " + estadosValidos);
+        }
 
-        return projectRepository.save(project);
+        project.setNombreCampana(details.getNombreCampana());
+        project.setDescripcionObjetivo(details.getDescripcionObjetivo());
+        project.setLocalidadBeneficiada(details.getLocalidadBeneficiada());
+        project.setFechaInicio(details.getFechaInicio());
+        project.setFechaFinEstimada(details.getFechaFinEstimada());
+        project.setIdCoordinadorResponsable(details.getIdCoordinadorResponsable());
+        project.setEstadoProyecto(details.getEstadoProyecto());
+
+        return socialProjectRepository.save(project);
     }
 
-    public void deleteProject(Long id) {
-        if (!projectRepository.existsById(id)) {
-            throw new IllegalArgumentException("No se puede eliminar: Proyecto no encontrado con ID: " + id);
+    @Transactional
+    public void deleteProject(UUID id) {
+        if (!socialProjectRepository.existsById(id)) {
+            throw new IllegalArgumentException("Proyecto no encontrado con ID: " + id);
         }
-        projectRepository.deleteById(id);
+
+        // Regla de Negocio: Validar que el proyecto no tenga transacciones financieras previas
+        BigDecimal donaciones = donationRepository.sumDonacionesByProyecto(id);
+        BigDecimal gastos = projectExpenseRepository.sumGastosByProyecto(id);
+
+        if (donaciones.compareTo(BigDecimal.ZERO) > 0 || gastos.compareTo(BigDecimal.ZERO) > 0) {
+            throw new IllegalStateException("No se puede eliminar el proyecto porque contiene registros contables activos (Donaciones o Gastos asociados)");
+        }
+
+        socialProjectRepository.deleteById(id);
+    }
+
+    public List<SocialProject> getProyectosDisponibles(String localidad) {
+        return socialProjectRepository.findProyectosDisponibles(localidad);
     }
 }

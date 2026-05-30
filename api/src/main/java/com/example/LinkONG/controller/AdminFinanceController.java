@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/admin/finanzas")
+@RequestMapping("/api/v1/admin")
 public class AdminFinanceController {
 
     private final FinanceService financeService;
@@ -23,12 +23,12 @@ public class AdminFinanceController {
         this.financeService = financeService;
     }
 
-    @GetMapping("/resumen")
+    @GetMapping("/finanzas/resumen")
     public ResponseEntity<Map<String, Object>> getResumen() {
         return ResponseEntity.ok(financeService.getFinanzasResumen());
     }
 
-    @GetMapping("/grafico-distribucion")
+    @GetMapping("/finanzas/grafico-distribucion")
     public ResponseEntity<List<Map<String, Object>>> getGraficoDistribucion() {
         return ResponseEntity.ok(financeService.getGraficoDistribucion());
     }

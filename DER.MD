@@ -125,3 +125,24 @@ Username: linkong_user
 Password: PAwAAWQbSjaaOyV2Pbz07AfphJ03hfpW
 Internal Url: postgresql://linkong_user:PAwAAWQbSjaaOyV2Pbz07AfphJ03hfpW@dpg-d8dgdc6rnols739b4tpg-a/linkong
 External Url: postgresql://linkong_user:PAwAAWQbSjaaOyV2Pbz07AfphJ03hfpW@dpg-d8dgdc6rnols739b4tpg-a.ohio-postgres.render.com/linkong
+
+Actualizacion Roles
+-- 1. Crear el ENUM para diferenciar los roles del sistema en el backend
+CREATE TYPE rol_usuario AS ENUM ('Admin', 'Coordinador', 'Voluntario');
+
+-- 2. Añadir credenciales y roles a la tabla de Coordinadores (Staff)
+-- Algunos coordinadores pueden ser designados como Administradores de la ONG
+ALTER TABLE coordinadores 
+ADD COLUMN contrasena VARCHAR(255) NOT NULL DEFAULT '$2b$10$rX.mHw...', -- Almacenará el hash de bcrypt
+ADD COLUMN rol rol_usuario NOT NULL DEFAULT 'Coordinador';
+
+-- 3. Añadir campo de contraseña a la tabla de Voluntarios para su portal web
+ALTER TABLE voluntarios 
+ADD COLUMN contrasena VARCHAR(255) NOT NULL DEFAULT '$2b$10$rX.mHw...';
+
+-- 4. Modificación opcional de conveniencia para la ruta:
+-- GET /api/v1/coordinador/actividades/proximas/alertas
+-- Añadir estado a las actividades ayuda a saber si una actividad ya fue cerrada o sigue pendiente
+CREATE TYPE estado_actividad AS ENUM ('Programada', 'Confirmada', 'Ejecutada', 'Cancelada');
+ALTER TABLE actividades 
+ADD COLUMN estado estado_actividad DEFAULT 'Programada';

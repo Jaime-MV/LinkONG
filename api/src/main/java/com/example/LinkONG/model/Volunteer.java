@@ -51,6 +51,10 @@ public class Volunteer {
     @Column(name = "estado_voluntario")
     private String estadoVoluntario; // ENUM: 'Activo', 'Inactivo', 'En Inducción'
 
+    @Size(max = 255)
+    @Column(name = "contrasena", nullable = false)
+    private String contrasena;
+
     @Column(name = "fecha_registro", insertable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 }

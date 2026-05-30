@@ -39,4 +39,8 @@ public class Activity {
     @Min(value = 1, message = "Los cupos requeridos deben ser mayores a 0")
     @Column(name = "cupos_voluntarios_requeridos", nullable = false)
     private Integer cuposVoluntariosRequeridos;
+
+    @Size(max = 50)
+    @Column(name = "estado")
+    private String estado; // ENUM: 'Programada', 'Confirmada', 'Ejecutada', 'Cancelada'
 }

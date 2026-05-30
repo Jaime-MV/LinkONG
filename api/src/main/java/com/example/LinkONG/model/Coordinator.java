@@ -28,4 +28,13 @@ public class Coordinator {
     @Size(max = 100)
     @Column(name = "correo", unique = true, nullable = false, length = 100)
     private String correo;
+
+    @Size(max = 255)
+    @Column(name = "contrasena", nullable = false)
+    private String contrasena;
+
+    @NotBlank(message = "El rol es requerido")
+    @Size(max = 50)
+    @Column(name = "rol", nullable = false, length = 50)
+    private String rol; // Enum: 'Admin', 'Coordinador', 'Voluntario'
 }

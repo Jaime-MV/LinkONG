@@ -50,6 +50,14 @@ public class ActivityService {
         if (activity.getFechaEjecucion() == null) {
             activity.setFechaEjecucion(LocalDateTime.now().plusDays(2));
         }
+        if (activity.getEstado() == null) {
+            activity.setEstado("Programada");
+        } else {
+            List<String> estadosValidos = Arrays.asList("Programada", "Confirmada", "Ejecutada", "Cancelada");
+            if (!estadosValidos.contains(activity.getEstado())) {
+                throw new IllegalArgumentException("Estado de actividad no válido. Estados válidos: " + estadosValidos);
+            }
+        }
         return activityRepository.save(activity);
     }
 
@@ -60,6 +68,14 @@ public class ActivityService {
 
         if (details.getCuposVoluntariosRequeridos() == null || details.getCuposVoluntariosRequeridos() <= 0) {
             throw new IllegalArgumentException("Los cupos de voluntarios deben ser mayores a cero");
+        }
+
+        if (details.getEstado() != null) {
+            List<String> estadosValidos = Arrays.asList("Programada", "Confirmada", "Ejecutada", "Cancelada");
+            if (!estadosValidos.contains(details.getEstado())) {
+                throw new IllegalArgumentException("Estado de actividad no válido. Estados válidos: " + estadosValidos);
+            }
+            activity.setEstado(details.getEstado());
         }
 
         activity.setTituloActividad(details.getTituloActividad());

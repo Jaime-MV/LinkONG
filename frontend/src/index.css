@@ -1,22 +1,376 @@
+/* Premium Vanilla CSS Design System for LinkONG with Dynamic Palettes */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Global Default Theme (Palette 2: Comunidad y Empatía) */
+  --primary: #2B6CB0;
+  --primary-hover: #2B5C8F;
+  --primary-soft: rgba(43, 108, 176, 0.1);
+  --secondary: #ECC94B;
+  --secondary-soft: rgba(236, 201, 75, 0.15);
+  --bg-base: #FFFFFF;
+  --bg-surface: #F7FAFC;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --accent: #E53E3E;
+  --accent-hover: #C53030;
+  --accent-soft: rgba(229, 62, 62, 0.15);
+  --text-main: #1A202C;
+  --text-muted: #4A5568;
+  --text-inverse: #ffffff;
+  
+  --border-color: #E2E8F0;
+  --border-focus: #2B6CB0;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 30px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 20px -2px rgba(43, 108, 176, 0.05), 0 2px 10px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 12px 30px -4px rgba(43, 108, 176, 0.08), 0 4px 16px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px 0 rgba(229, 62, 62, 0.25);
+  
+  --primary-gradient: linear-gradient(135deg, #2B6CB0, #3182CE);
+  --accent-gradient: linear-gradient(135deg, #E53E3E, #FC8181);
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* General Feedback Colors */
+  --success: hsl(142, 76%, 36%);
+  --success-soft: hsla(142, 76%, 36%, 0.1);
+  --warning: hsl(38, 92%, 50%);
+  --warning-soft: hsla(38, 92%, 50%, 0.1);
+  --danger: hsl(350, 89%, 60%);
+  --danger-soft: hsla(350, 89%, 60%, 0.1);
+  --info: hsl(199, 89%, 48%);
+  --info-soft: hsla(199, 89%, 48%, 0.1);
+}
+
+/* ==========================================================
+   🌈 Dynamic Color Palettes overrides (applied via body class)
+   ========================================================== */
+
+/* Palette 1: Confianza y Cuidado (Salud, Medio Ambiente, Ayuda Humanitaria) */
+body.palette-1 {
+  --primary: #1A365D;
+  --primary-hover: #142C4E;
+  --primary-soft: rgba(26, 54, 93, 0.1);
+  --secondary: #48BB78;
+  --secondary-soft: rgba(72, 187, 120, 0.15);
+  --bg-base: #F7FAFC;
+  --bg-surface: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --accent: #DD6B20;
+  --accent-hover: #C05621;
+  --accent-soft: rgba(221, 107, 32, 0.15);
+  --text-main: #2D3748;
+  --text-muted: #718096;
+  --border-color: #E2E8F0;
+  --border-focus: #48BB78;
+  --shadow-glow: 0 0 20px 0 rgba(221, 107, 32, 0.25);
+  --primary-gradient: linear-gradient(135deg, #1A365D, #48BB78);
+  --accent-gradient: linear-gradient(135deg, #DD6B20, #ED8936);
+}
+
+/* Palette 2: Comunidad y Empatía (Social, Derechos Humanos, Infancia) */
+body.palette-2 {
+  --primary: #2B6CB0;
+  --primary-hover: #2B5C8F;
+  --primary-soft: rgba(43, 108, 176, 0.1);
+  --secondary: #ECC94B;
+  --secondary-soft: rgba(236, 201, 75, 0.15);
+  --bg-base: #FFFFFF;
+  --bg-surface: #F7FAFC;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --accent: #E53E3E;
+  --accent-hover: #C53030;
+  --accent-soft: rgba(229, 62, 62, 0.15);
+  --text-main: #1A202C;
+  --text-muted: #4A5568;
+  --border-color: #E2E8F0;
+  --border-focus: #2B6CB0;
+  --shadow-glow: 0 0 20px 0 rgba(229, 62, 62, 0.25);
+  --primary-gradient: linear-gradient(135deg, #2B6CB0, #3182CE);
+  --accent-gradient: linear-gradient(135deg, #E53E3E, #FC8181);
+}
+
+/* Palette 3: Neutral y Autoritaria (Legal, Académico, Políticas) */
+body.palette-3 {
+  --primary: #2D3748;
+  --primary-hover: #1A202C;
+  --primary-soft: rgba(45, 55, 72, 0.1);
+  --secondary: #319795;
+  --secondary-soft: rgba(49, 151, 149, 0.15);
+  --bg-base: #EDF2F7;
+  --bg-surface: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --accent: #D69E2E;
+  --accent-hover: #B7791F;
+  --accent-soft: rgba(214, 158, 46, 0.15);
+  --text-main: #1A202C;
+  --text-muted: #718096;
+  --border-color: #CBD5E0;
+  --border-focus: #319795;
+  --shadow-glow: 0 0 20px 0 rgba(214, 158, 46, 0.25);
+  --primary-gradient: linear-gradient(135deg, #2D3748, #319795);
+  --accent-gradient: linear-gradient(135deg, #D69E2E, #ECC94B);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  font-family: var(--font-body);
+  background-color: var(--bg-base);
+  color: var(--text-main);
   min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: var(--primary); /* Title texts elegantly inherit primary theme color */
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+a:hover {
+  color: var(--primary-hover);
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Global Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Premium Layout Elements */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+.glass-panel:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-soft);
+}
+
+.premium-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-soft);
+}
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: var(--transition-normal);
+}
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+/* Premium Input Fields */
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  color: var(--text-main);
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* Premium Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--accent-gradient);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-glow);
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+  background: var(--accent-hover);
+  box-shadow: 0 0 25px 0 var(--accent-soft);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-secondary {
+  background-color: var(--bg-surface);
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+.btn-secondary:hover {
+  background-color: var(--border-color);
+  color: var(--text-main);
+}
+.btn-success {
+  background-color: var(--success);
+  color: var(--text-inverse);
+}
+.btn-success:hover {
+  background-color: hsl(142, 76%, 30%);
+}
+.btn-danger {
+  background-color: var(--danger);
+  color: var(--text-inverse);
+}
+.btn-danger:hover {
+  background-color: hsl(350, 89%, 52%);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-primary { background: var(--primary-soft); color: var(--primary); }
+.badge-success { background: var(--success-soft); color: var(--success); }
+.badge-warning { background: var(--warning-soft); color: var(--warning); }
+.badge-danger { background: var(--danger-soft); color: var(--danger); }
+.badge-info { background: var(--info-soft); color: var(--info); }
+
+/* Custom Grid Utility Classes */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Custom Animation Classes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fade-in {
+  animation: fadeIn var(--transition-smooth) forwards;
+}
+
+/* Modern Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border-color);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: 9999px;
+  transition: width 0.5s ease-out;
 }
